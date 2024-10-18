@@ -97,6 +97,7 @@ void load_txt(const string& filename, vector<Tovar>& tovars) {
     inputFile.close();
 }
 
+
 // Функция для удаления определенного количества товара
 void removeTovar(vector<Tovar>& tovars, const string& name, int countToRemove) {
     cout << endl;
@@ -131,6 +132,7 @@ int main() {
     setlocale(LC_ALL, "Russian");
     vector<Tovar> tovars;
     load_txt("input.txt", tovars);
+
 
     cout << "Список товаров до изменения: " << endl << endl;
     for (const auto& tovar : tovars) {
