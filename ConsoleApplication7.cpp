@@ -97,12 +97,63 @@ void load_txt(const string& filename, vector<Tovar>& tovars) {
     inputFile.close();
 }
 
+void print_result(vector<Tovar> tovars) {
+    for (const auto& tovar : tovars) {
+        cout << tovar.date << " " << tovar.name << " " << tovar.count << endl;
+    }
+}
+
+void remove_tovar(vector<Tovar>& tovars) {
+
+    string str;
+    cout << "Введите товар для удаления: ";
+    cin >> str;
+
+    int len;
+    cout << "Введите какое количество товаров удалить: ";
+    cin >> len;
+    cout << endl;
+
+    bool flag = false;
+    for (int i = 0; i < tovars.size(); i++) {
+        if (str == tovars[i].name) {
+            flag = true;
+
+            if (len == tovars[i].count) {
+                tovars.erase(tovars.begin() + i);
+                cout << "Товар " << str << " полностью удалён.\n\n";
+                break;
+            }
+            if (len > tovars[i].count) {
+                cout << "Количество товаров на удаление за пределами допустимого. Доступно - " << tovars[i].count << endl;
+                break;
+            }
+            else {
+                tovars[i].count -= len;
+                break;
+            }
+            
+        }
+    }
+    if (!flag) {
+        cout << "Не удалось найти товар.\n";
+        return;
+    }
+    print_result(tovars);
+}
+
 int main() {
     setlocale(LC_ALL, "Russian");
     vector<Tovar> tovars;
     load_txt("input.txt", tovars);
 
-    for (const auto& tovar : tovars) {
-        cout << tovar.date << " " << tovar.name << " " << tovar.count << endl;
+    print_result(tovars);
+    cout << endl;
+
+    int op;
+    cout << "Желаете удалить товары (1 или 0)? ";
+    cin >> op;
+    if (op) {
+        remove_tovar(tovars);
     }
 }
