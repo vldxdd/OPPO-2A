@@ -97,49 +97,35 @@ void load_txt(const string& filename, vector<Tovar>& tovars) {
     inputFile.close();
 }
 
-void print_result(vector<Tovar> tovars) {
-    for (const auto& tovar : tovars) {
-        cout << tovar.date << " " << tovar.name << " " << tovar.count << endl;
-    }
-}
 
-void remove_tovar(vector<Tovar>& tovars) {
-
-    string str;
-    cout << "Введите товар для удаления: ";
-    cin >> str;
-
-    int len;
-    cout << "Введите какое количество товаров удалить: ";
-    cin >> len;
+// Функция для удаления определенного количества товара
+void removeTovar(vector<Tovar>& tovars, const string& name, int countToRemove) {
     cout << endl;
-
-    bool flag = false;
-    for (int i = 0; i < tovars.size(); i++) {
-        if (str == tovars[i].name) {
-            flag = true;
-
-            if (len == tovars[i].count) {
-                tovars.erase(tovars.begin() + i);
-                cout << "Товар " << str << " полностью удалён.\n\n";
-                break;
-            }
-            if (len > tovars[i].count) {
-                cout << "Количество товаров на удаление за пределами допустимого. Доступно - " << tovars[i].count << endl;
-                break;
+    cout << "Список товаров после изменения: " << endl << endl;
+    for (auto& tovar : tovars) {
+        if (tovar.name == name) {
+            if (tovar.count >= countToRemove) {
+                tovar.count -= countToRemove;
+                if (tovar.count == 0) {
+                    // cout << "Товар \"" << name << "\" полностью удален." << endl;
+                    for (auto i = 0; i < tovars.size(); i++) {
+                        if (tovars[i].count == 0) {
+                            tovars.erase(tovars.begin() + i);
+                        }
+                    }
+                }
+                else {
+                    cout << "Удалено " << countToRemove << " единиц товара: " << name << endl;
+                }
             }
             else {
-                tovars[i].count -= len;
-                break;
+                cout << "Ошибка: Недостаточно товара для удаления. Доступно: " << tovar.count << endl;
             }
-            
+            return;
         }
+        cout << tovar.date << " " << tovar.name << " " << tovar.count << endl;
     }
-    if (!flag) {
-        cout << "Не удалось найти товар.\n";
-        return;
-    }
-    print_result(tovars);
+    cout << "Ошибка: Товар с именем \"" << name << "\" не найден." << endl;
 }
 
 int main() {
@@ -147,13 +133,20 @@ int main() {
     vector<Tovar> tovars;
     load_txt("input.txt", tovars);
 
-    print_result(tovars);
-    cout << endl;
 
-    int op;
-    cout << "Желаете удалить товары (1 или 0)? ";
-    cin >> op;
-    if (op) {
-        remove_tovar(tovars);
+    cout << "Список товаров до изменения: " << endl << endl;
+    for (const auto& tovar : tovars) {
+        cout << tovar.date << " " << tovar.name << " " << tovar.count << endl;
     }
+
+    string itemName;
+    int countToRemove;
+
+    cout << "Введите имя товара для удаления: ";
+    getline(cin, itemName);
+    cout << "Введите количество для удаления: ";
+    cin >> countToRemove;
+
+    removeTovar(tovars, itemName, countToRemove);
+
 }
